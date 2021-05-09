@@ -189,6 +189,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
             HPEN BPen = CreatePen(PS_SOLID, 2, RGB(50, 0, 255));
             HPEN KPen = CreatePen(PS_SOLID, 1, RGB(20, 20, 5));
             HPEN GPen = CreatePen(PS_SOLID, 2, RGB(20, 205, 20));
+            HPEN RPen = CreatePen(PS_SOLID, 2, RGB(205, 20, 20));
+
 
             int n = 10;
             int radius = 300;
@@ -294,18 +296,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
             int v; // activna vert
             int q; // doslidzhuvana vert
 
+            int prevV = 0; // for drawing
+            SelectObject(hdc, RPen);
+            Ellipse(hdc, nx[0]-dx, ny[0]-dy, nx[0]+dx, ny[0]+dy);
+            TextOut(hdc, nx[0]-dtx, ny[0]-dy/2, numbers[0], 2);
+
             printf("\n Nomer obhodu: %d      vershina: %d\n", count, 1);
             TextOut(hdc, nx[0]-dtx+20, ny[0]-dy/3, numbers[count-1], 2);
             while (!checkEmpty){
+                sleep(1);
+
                 v = queue[queueHead]-1;
+
+                // make active vertices red
+                SelectObject(hdc, RPen);
+                Ellipse(hdc, nx[v]-dx, ny[v]-dy, nx[v]+dx, ny[v]+dy);
+                TextOut(hdc, nx[v]-dtx, ny[v]-dy/2, numbers[v], 2);
+                TextOut(hdc, nx[v]-dtx, ny[v]-dy/2, numbers[v], 2);
+
+                // clear active vertice color to default
+                if(prevV != v){SelectObject(hdc, BPen);
+                Ellipse(hdc, nx[prevV]-dx, ny[prevV]-dy, nx[prevV]+dx, ny[prevV]+dy);
+                TextOut(hdc, nx[prevV]-dtx, ny[prevV]-dy/2, numbers[prevV], 2);
+                TextOut(hdc, nx[prevV]-dtx, ny[prevV]-dy/2, numbers[prevV], 2);
+                prevV = v;}
+
                 q = 0; // nomer doslidzhuvanoi vershini
                 while (q < n && q > -0.5){
                     if (A[v][q] == 1 && v != q && BFS[q] == 0){
                         count++;
                         BFS[q] = count;
                         queueIn(q+1);
-
-                        sleep(2);
 
                         SelectObject(hdc, GPen);
                         int i = v;
