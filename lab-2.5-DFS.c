@@ -294,15 +294,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
             int v; // activna vert
             int q; // doslidzhuvana vert
 
-            int prevV = q; // for drawing
+            int prevV = 0; // for drawing
             SelectObject(hdc, RPen);
             Ellipse(hdc, nx[0]-dx, ny[0]-dy, nx[0]+dx, ny[0]+dy);
             TextOut(hdc, nx[0]-dtx, ny[0]-dy/2, numbers[0], 2);
 
-            printf("\n Nomer obhodu: %d      vershina: %d\n", count, 1);
+            printf("\n Visit number: %d      Vertex number: %d\n", count, 1);
             TextOut(hdc, nx[0]-dtx+20, ny[0]-dy/3, numbers[count-1], 2);
             while (!checkEmpty){
-                sleep(1);
+                sleep(2);
 
                 v = stack[stackHead]-1;
 
@@ -340,7 +340,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
                         }
                         TextOut(hdc, nx[j]-dtx+20, ny[j]-dy/3, numbers[count-1], 2);
 
-                        printf(" Nomer obhodu: %d      vershina: %d\n", count, q+1);
+                        printf(" Visit number: %d      Vertex number: %d\n", count, q+1);
                         q = -1;  // vihid z ciklu while        
                     } else {
                         q++;
@@ -352,6 +352,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
 
                 checkEmpty = isEmpty(n);
             }
+
+            sleep(2);
+            SelectObject(hdc, BPen);
+            Ellipse(hdc, nx[prevV]-dx, ny[prevV]-dy, nx[prevV]+dx, ny[prevV]+dy);
+            TextOut(hdc, nx[prevV]-dtx, ny[prevV]-dy/2, numbers[prevV], 2);
+            TextOut(hdc, nx[prevV]-dtx, ny[prevV]-dy/2, numbers[prevV], 2);
+// print DFS
+            printf("\n DFS (index == vertex num, value == visit num):");
+            printf("\n [");
+            for (int i = 0; i < n; i++){
+                printf(" %0.lf,", DFS[i]);
+            }
+            printf(" ]\n");
+
 
 // Print and draw tree
             printf("\n Tree: \n");
